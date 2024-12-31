@@ -6,7 +6,7 @@ public class Cell {
 
     public static boolean isNumber(String text) {
         boolean ans = false;
-        if (text.charAt(0) != '.' && !Character.isDigit(text.charAt(0))) //check if the first char is valid
+        if (text.charAt(0) != '.' && text.charAt(0) != '-' && !Character.isDigit(text.charAt(0))) //check if the first char is valid
             return ans;
 
         for (int i = 1; i < text.length(); i++) {

@@ -17,6 +17,14 @@ void Close()
    assertFalse(ans);
 }
 
+    @Test
+    void testIsNumber()
+    {
+        String s1 = "-.256";
+        boolean ans = Cell.isNumber(s1);
+        assertTrue(ans);
+    }
+
 
 
 }
