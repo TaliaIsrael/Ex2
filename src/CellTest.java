@@ -13,21 +13,21 @@ public class CellTest {
 void Close()
 {
     String s1 = "=((3+8)*7";
-   boolean ans = EE.brackets(s1);
+   boolean ans = SCell.brackets(s1);
    assertFalse(ans);
-   assertTrue(EE.brackets("=(3-9)*(A1-3)"));
-   assertTrue(EE.brackets("=((3-9)*(A1-3))"));
-   assertTrue(EE.brackets("=((3-9*A1-3))"));
-   assertTrue(EE.brackets("=(3)-(9*A1)-(3)"));
-   assertTrue(EE.brackets("=(5*(9)*5)"));
-   assertFalse(EE.brackets("=)5*(9)*5("));
+   assertTrue(SCell.brackets("=(3-9)*(A1-3)"));
+   assertTrue(SCell.brackets("=((3-9)*(A1-3))"));
+   assertTrue(SCell.brackets("=((3-9*A1-3))"));
+   assertTrue(SCell.brackets("=(3)-(9*A1)-(3)"));
+   assertTrue(SCell.brackets("=(5*(9)*5)"));
+   assertFalse(SCell.brackets("=)5*(9)*5("));
 }
 
     @Test
     void testIsNumber()
     {
         String s1 = "-.256";
-        boolean ans = EE.isNumber(s1);
+        boolean ans = SCell.isNumber(s1);
         assertTrue(ans);
     }
 
@@ -35,7 +35,7 @@ void Close()
     void testCompueform()
     {
        // try {
-            Double s1 = EE.computeForm("=(1-1)+(5+3)/2");
+            Double s1 = SCell.computeForm("=(1-1)+(5+3)/2");
             assertEquals(s1, 4.0);
 //        } catch(Exception e){
 //            System.out.println("Compute Form failed");
