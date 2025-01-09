@@ -1,9 +1,25 @@
-// Add your documentation below:
 
 public class SCell implements Cell {
     private String line;
     private int type;
     private int order;
+
+    public static boolean isCellReference(String text) {
+        if (text == null || text.length() < 2) {
+            return false;
+        }
+        char firstChar = Character.toUpperCase(text.charAt(0));
+        if (firstChar < 'A' || firstChar > 'Z') {
+            return false;
+        }
+        String numberPart = text.substring(1);
+        try {
+            int row = Integer.parseInt(numberPart);
+            return row >= 0;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 
     public static boolean isNumber(String text) {
         boolean ans = false;
@@ -80,6 +96,9 @@ public class SCell implements Cell {
         }
         if (!brackets(nform)) {
             return false;
+        }
+        if (isCellReference(nform)) {
+            return true;
         }
         int opIndex = findOfMainOp(nform);
         if (opIndex == -1) {
@@ -182,9 +201,7 @@ public class SCell implements Cell {
         }
     }
 
-
     public SCell(String s) {
-        // Add your code here
         setData(s);
     }
 
@@ -193,12 +210,15 @@ public class SCell implements Cell {
     }
     @Override
     public int getOrder() {
+        if (type == Ex2Utils.TEXT || type == Ex2Utils.NUMBER) {
+            return 0; // Base case: text or number cells have order 0
+        }
         return this.order;
     }
 
     @Override
     public void setOrder(int t) {
-
+        this.order = t;
     }
 
     //@Override
@@ -217,8 +237,12 @@ public void setData(String s) {
         } else if (isForm(s)) {
             type = Ex2Utils.FORM; //
         } else {
-            type = Ex2Utils.ERR_FORM_FORMAT; // 3 = נוסחה לא תקינה
+            type = Ex2Utils.ERR_FORM_FORMAT;
         }
+    }
+    @Override
+    public int getType() {
+        return type;
     }
     @Override
     public String getData() {
@@ -226,13 +250,16 @@ public void setData(String s) {
     }
 
     @Override
-    public int getType() {
-        return type;
-    }
-
-    @Override
     public void setType(int t) {
-        type = t;
+        if (t == Ex2Utils.NUMBER || t == Ex2Utils.TEXT ||
+                t == Ex2Utils.FORM || t == Ex2Utils.ERR_FORM_FORMAT ||
+                t == Ex2Utils.ERR_CYCLE_FORM) {
+            type = t;
+            // Reset order to 0 if changing to non-formula type
+            if (t != Ex2Utils.FORM) {
+                order = 0;
+            }
+        }
     }
 
 }
