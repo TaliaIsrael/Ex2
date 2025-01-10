@@ -20,7 +20,6 @@ public class SCell implements Cell {
             return false;
         }
     }
-
     public static boolean isNumber(String text) {
         boolean ans = false;
         if (text == null || text.isEmpty()) {
@@ -175,6 +174,14 @@ public class SCell implements Cell {
         int op = findOfMainOp(nform);
         if(op == -1)
         {
+//            if(isCellReference(nform.substring(1)))
+//            {
+//                CellEntry c = new CellEntry(nform.substring(1).charAt(0), Integer.parseInt(nform.substring(2)));
+//                if(c.isValid())
+//                {
+//                    return computeForm()
+//                }
+//            }
             throw new NumberFormatException();
         }
 
@@ -261,5 +268,4 @@ public void setData(String s) {
             }
         }
     }
-
 }
