@@ -18,89 +18,77 @@ public class Ex2sheetTest {
         assertFalse(Ex2Sheet.isCellReference("A100"));
     }
 
-//    @Test
-//    void testDepth() {
-//                Ex2Sheet sheet = new Ex2Sheet(3, 3);
-//                sheet.set(0, 0, "5");
-//                sheet.set(0, 1, "Hello");
-//                sheet.set(0, 2, "3.14");
-//                sheet.set(1, 0, "=A1");
-//                sheet.set(1, 1, "=B1");
-//                sheet.set(2, 0, "=A1+B1");
-//                sheet.set(2, 1, "=C1");     // C2 תלוי ב-C1
-//                sheet.set(2, 2, "=C2");     // C3 תלוי ב-C2 (יצירת מעגליות)
-//                int[][] depths = sheet.depth();
-//                assertEquals(0, depths[0][0]); // A1 (מספר)
-//                assertEquals(0, depths[0][1]); // B1 (טקסט)
-//                assertEquals(0, depths[0][2]); // C1 (מספר)
-//                assertEquals(1, depths[1][0]); // A2 (תלוי ב-A1)
-//                assertEquals(1, depths[1][1]); // B2 (תלוי ב-B1)
-//                assertEquals(1, depths[2][0]); // A3 (תלוי ב-A1 וב-B1)
-//                assertEquals(-1, depths[2][1]); // B3 (תלוי ב-C1, שיוצר מעגליות)
-//                assertEquals(-1, depths[2][2]); // C3 (תלוי ב-C2, שיוצר מעגליות)
-//            }
-//}
-
     @Test
     public void testDepth() {
-        // יצירת גיליון בגודל 3x3
-        Ex2Sheet sheet = new Ex2Sheet(3, 3);
+        Ex2Sheet sheet = new Ex2Sheet(3, 3); // גיליון בגודל 3x3
 
-        // אתחול כל התאים עם ערך ברירת מחדל
-        for (int x = 0; x < 3; x++) {
-            for (int y = 0; y < 3; y++) {
-                sheet.set(x, y, Ex2Utils.EMPTY_CELL); // אתחול עם מחרוזת ריקה
-            }
-        }
+        // תא A0 (עמודה 0, שורה 0) מכיל מספר
+        sheet.set(0, 0, "5"); // A0 = 5
 
-        // 1. תאים עם ערכים קבועים (מספרים או טקסט)
-        sheet.set(0, 0, "5");       // מספר
-        sheet.set(0, 1, "Hello");   // טקסט
-        sheet.set(0, 2, "3.14");    // מספר
+        // תא A1 (עמודה 0, שורה 1) תלוי ב-A0
+        sheet.set(0, 1, "=A0"); // A1 = A0
 
-        // 2. תאים עם נוסחאות פשוטות
-        sheet.set(1, 0, "=A1");     // נוסחה שתלויה ב-A1
-        sheet.set(1, 1, "=B1");     // נוסחה שתלויה ב-B1
+        // תא B0 (עמודה 1, שורה 0) תלוי ב-A1
+        sheet.set(1, 0, "=A1"); // B0 = A1
 
-        // 3. תאים עם נוסחאות מורכבות
-        sheet.set(2, 0, "=A1+B1");  // נוסחה שתלויה ב-A1 וב-B1
+        // תא B1 (עמודה 1, שורה 1) תלוי ב-B0 וב-A0
+        sheet.set(1, 1, "=B0+A0"); // B1 = B0 + A0
 
-        // 4. מעגליות
-        sheet.set(2, 1, "=C1");     // C2 תלוי ב-C1
-        sheet.set(2, 2, "=C2");     // C3 תלוי ב-C2 (יצירת מעגליות)
+        // תא C2 (עמודה 2, שורה 2) מכיל טקסט
+        sheet.set(2, 2, "Hello"); // C2 = "Hello"
 
-        // חישוב העומק
+        // תא A2 (עמודה 0, שורה 2) יוצר תלות מעגלית עם B2
+        sheet.set(0, 2, "=B2"); // A2 = B2
+        sheet.set(1, 2, "=A2"); // B2 = A2
+
+        // מחשב את העומק של כל התאים
         int[][] depths = sheet.depth();
 
-        // בדיקות:
-        // 1. תאים עם ערכים קבועים
-        assertEquals(0, depths[0][0]); // A1 (מספר)
-        assertEquals(0, depths[0][1]); // B1 (טקסט)
-        assertEquals(0, depths[0][2]); // C1 (מספר)
-
-        // 2. תאים עם נוסחאות פשוטות
-        assertEquals(1, depths[1][0]); // A2 (תלוי ב-A1)
-        assertEquals(1, depths[1][1]); // B2 (תלוי ב-B1)
-
-        // 3. תאים עם נוסחאות מורכבות
-        assertEquals(1, depths[2][0]); // A3 (תלוי ב-A1 וב-B1)
-
-        // 4. מעגליות
-        assertEquals(-1, depths[2][1]); // B3 (תלוי ב-C1, שיוצר מעגליות)
-        assertEquals(-1, depths[2][2]); // C3 (תלוי ב-C2, שיוצר מעגליות)
+        // בודק את העומק של כל תא
+        assertEquals(0, depths[0][0]); // A0: מספר, עומק 0
+        assertEquals(1, depths[0][1]); // A1: תלוי ב-A0, עומק 1
+        assertEquals(2, depths[1][0]); // B0: תלוי ב-A1, עומק 2
+        assertEquals(3, depths[1][1]); // B1: תלוי ב-B0 וב-A0, עומק 3
+        assertEquals(0, depths[2][2]); // C2: טקסט, עומק 0
+        assertEquals(-1, depths[0][2]); // A2: תלות מעגלית, עומק -1
+        assertEquals(-1, depths[1][2]); // B2: תלות מעגלית, עומק -1
     }
+
+
 
     @Test
     public void testFormulaWithUncomputedDependency() {
         Ex2Sheet sheet = new Ex2Sheet(3, 3);
         sheet.set(0, 0, "5");       // A1 = 5 (מספר)
-        sheet.set(1, 0, "=A1");     // A2 = A1 (נוסחה)
+        sheet.set(1, 0, "=A0");     // A2 = A1 (נוסחה)
 
         int[][] depths = new int[3][3];
         depths[0][0] = -1; // A1 עדיין לא חושב
 
         assertFalse(sheet.canBeComputedNow(1, 0, depths)); // A2 לא יכול להיות מחושב כי A1 לא חושב
     }
+    @Test
+    public void testCanBeComputedNow_EmptyCell() {
+        Ex2Sheet sheet = new Ex2Sheet(3, 3);
+        sheet.set(2, 2, ""); // C2 = "" (תא ריק)
+        int[][] depths = new int[3][3];
+        depths[2][2] = -1; // C2 עדיין לא חושב
+        assertTrue(sheet.canBeComputedNow(2, 2, depths)); // C2: תא ריק, ניתן לחישוב
+    }
+
+
+    @Test
+    public void testCanBeComputedNow_InvalidCellReference() {
+        Ex2Sheet sheet = new Ex2Sheet(3, 3);
+        sheet.set(0, 0, "=Z99"); // A0 = Z99 (הפניה לתא לא קיים)
+        int[][] depths = new int[3][3];
+        depths[0][0] = -1; // A0 עדיין לא חושב
+        assertFalse(sheet.canBeComputedNow(0, 0, depths)); // A0: לא ניתן לחישוב כי ההפניה לא תקינה
+    }
+
+
+
+
 
 }
 

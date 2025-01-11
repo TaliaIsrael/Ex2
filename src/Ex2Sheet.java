@@ -109,7 +109,7 @@ public class Ex2Sheet implements Sheet {
 
     @Override
     public boolean isIn(int xx, int yy) {
-            return xx >= 0 && yy >= 0 && xx < this.width() && yy < this.height();
+        return xx >= 0 && yy >= 0 && xx < this.width() - 1 && yy < this.height() - 1;
     }
 
     @Override
@@ -214,7 +214,6 @@ public class Ex2Sheet implements Sheet {
             // אם כל התאים התלויים כבר חושבו, התא הנוכחי יכול להיות מחושב
             return true;
         }
-
         // אם התא הוא שגיאה או לא מוגדר, לא ניתן לחשב אותו
         return false;
     }
