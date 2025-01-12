@@ -15,32 +15,29 @@ public class SCell implements Cell {
         String numberPart = text.substring(1);
         try {
             int row = Integer.parseInt(numberPart);
-            return row >= 0;
+            return row >= 0 && row <= 99;
         } catch (NumberFormatException e) {
             return false;
         }
     }
+
     public static boolean isNumber(String text) {
         boolean ans = false;
-        if (text == null || text.isEmpty()) {
+        if (text == null || text.isEmpty() || text == "") {
             return ans;
         }
         if (text.charAt(0) != '.' && text.charAt(0) != '-' && !Character.isDigit(text.charAt(0))) //check if the first char is valid
             return ans;
         boolean point = false;
-        for (int i = 1; i < text.length(); i++)
-        {
-            if (text.charAt(i) == '.'){
-                if(point)
-                {
+        for (int i = 1; i < text.length(); i++) {
+            if (text.charAt(i) == '.') {
+                if (point) {
                     ans = false;
                     return ans;
                 }
                 point = true;
-            }
-            else{
-                if(!Character.isDigit(text.charAt(i)))
-                {
+            } else {
+                if (!Character.isDigit(text.charAt(i))) {
                     ans = false;
                     return ans;
                 }
@@ -88,21 +85,30 @@ public class SCell implements Cell {
         if (text == null || text.isEmpty() || text.charAt(0) != '=' || text.length() < 2) {
             return false;
         }
-        String nform = text.substring(1).replace(" ", "");
+        String nform = text.substring(1).replace(" ", ""); // הסר רווחים וסימן "="
 
+        // אם הנוסחה היא מספר
         if (isNumber(nform)) {
             return true;
         }
-        if (!brackets(nform)) {
-            return false;
-        }
+
+        // אם הנוסחה היא הפניה לתא
         if (isCellReference(nform)) {
             return true;
         }
+
+        // אם הנוסחה מכילה סוגריים לא תקינים
+        if (!brackets(nform)) {
+            return false;
+        }
+
+        // אם הנוסחה מכילה אופרטורים
         int opIndex = findOfMainOp(nform);
         if (opIndex == -1) {
             return false;
         }
+
+        // בדוק את הצד השמאלי והימני של הנוסחה
         String leftSide = nform.substring(0, opIndex);
         String rightSide = nform.substring(opIndex + 1);
         return !leftSide.isEmpty() && !rightSide.isEmpty() && isForm("=" + leftSide) && isForm("=" + rightSide);
@@ -118,28 +124,16 @@ public class SCell implements Cell {
         for (int i = 0; i < nform.length(); i++) {
             if (nform.charAt(i) == '(') {
                 sum++;
-            }
-            else
-            if (nform.charAt(i) == ')')
-            {
+            } else if (nform.charAt(i) == ')') {
                 sum--;
-            }
-            else
-            if (sum == 0)
-            {
-                if (nform.charAt(i) == '*' || nform.charAt(i) == '/')
-                {
-                    if (2 <= mainOp)
-                    {
+            } else if (sum == 0) {
+                if (nform.charAt(i) == '*' || nform.charAt(i) == '/') {
+                    if (2 <= mainOp) {
                         mainOp = 2;
                         mainOpIndex = i;
                     }
-                }
-                else
-                if (nform.charAt(i) == '+' || nform.charAt(i) == '-')
-                {
-                    if (1 <= mainOp)
-                    {
+                } else if (nform.charAt(i) == '+' || nform.charAt(i) == '-') {
+                    if (1 <= mainOp) {
                         mainOp = 1;
                         mainOpIndex = i;
                     }
@@ -153,27 +147,26 @@ public class SCell implements Cell {
     public static double computeForm(String form) {
         form = form.replace(" ", "");
         String nform = form;
-        if(nform.charAt(0)=='='){
+        if (nform.charAt(0) == '=') {
             nform = nform.substring(1);
         }
         if (isNumber(nform)) {
             return Double.parseDouble(nform);
         }
 
-        if(nform.startsWith("(") && nform.endsWith(")")){
-            if(brackets(nform.substring(1, nform.length() - 1))){
+        if (nform.startsWith("(") && nform.endsWith(")")) {
+            if (brackets(nform.substring(1, nform.length() - 1))) {
                 return computeForm(nform.substring(1, nform.length() - 1));
             }
         }
-        if(!brackets(nform)){
+        if (!brackets(nform)) {
             throw new NumberFormatException();
         }
-        if(nform.endsWith("*") || nform.endsWith("/") || nform.endsWith("-") || nform.endsWith("+")){
+        if (nform.endsWith("*") || nform.endsWith("/") || nform.endsWith("-") || nform.endsWith("+")) {
             throw new NumberFormatException();
         }
         int op = findOfMainOp(nform);
-        if(op == -1)
-        {
+        if (op == -1) {
 //            if(isCellReference(nform.substring(1)))
 //            {
 //                CellEntry c = new CellEntry(nform.substring(1).charAt(0), Integer.parseInt(nform.substring(2)));
@@ -196,14 +189,12 @@ public class SCell implements Cell {
             return left - right;
         } else if (nform.charAt(op) == '*') {
             return left * right;
-        } else if (nform.charAt(op) == '/')
-        {
+        } else if (nform.charAt(op) == '/') {
             if (right == 0) {
                 throw new NumberFormatException();
             }
             return left / right;
-        }
-        else {
+        } else {
             throw new NumberFormatException();
         }
     }
@@ -212,9 +203,14 @@ public class SCell implements Cell {
         setData(s);
     }
 
-    public void setOrder(String s){
+    //public SCell() {
+      //  setData("");
+   // }
+
+    public void setOrder(String s) {
 
     }
+
     @Override
     public int getOrder() {
         if (type == Ex2Utils.TEXT || type == Ex2Utils.NUMBER) {
@@ -235,22 +231,26 @@ public class SCell implements Cell {
     }
 
     @Override
-public void setData(String s) {
+    public void setData(String s) {
         line = s;
-        if (isNumber(s)) {
+        if (isNumber(line)) {
+            line = s.replace("//s", "");
             type = Ex2Utils.NUMBER;
-        } else if (isText(s)) {
+        } else if (isText(line)) {
             type = Ex2Utils.TEXT;
-        } else if (isForm(s)) {
-            type = Ex2Utils.FORM; //
+        } else if (isForm(line)) {
+            line = s.replace("//s", "");
+            type = Ex2Utils.FORM;
         } else {
             type = Ex2Utils.ERR_FORM_FORMAT;
         }
     }
+
     @Override
     public int getType() {
         return type;
     }
+
     @Override
     public String getData() {
         return line;
@@ -258,14 +258,6 @@ public void setData(String s) {
 
     @Override
     public void setType(int t) {
-        if (t == Ex2Utils.NUMBER || t == Ex2Utils.TEXT ||
-                t == Ex2Utils.FORM || t == Ex2Utils.ERR_FORM_FORMAT ||
-                t == Ex2Utils.ERR_CYCLE_FORM) {
-            type = t;
-            // Reset order to 0 if changing to non-formula type
-            if (t != Ex2Utils.FORM) {
-                order = 0;
-            }
-        }
+        type = t;
     }
 }
