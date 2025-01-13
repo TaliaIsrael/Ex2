@@ -1,6 +1,8 @@
 I'm Talia Israel, a first-year Computer Science student at Ariel University.
 This is my second project, and it’s a leap forward
 from basic operations to building a functional spreadsheet system – think of it as creating a lightweight Excel from scratch!
+
+
 **What It Does**
 This spreadsheet can handle:
 •	Text and Numbers: Store plain text or numeric values in cells.
@@ -8,7 +10,10 @@ This spreadsheet can handle:
 •	Cell References: Use values from other cells, like =A1+B2.
 •	Complex Expressions: Support for parentheses, like =((1+2)*3)-4.
 •	Error Detection: Identify invalid formulas, bad references, or circular dependencies.
+
 **Key Components**
+
+
 **Here’s how the system is built:**
 •	SCell.java: Handles the logic for individual cells, like storing content and validating types.
 •	Ex2Sheet.java: Manages the entire spreadsheet grid and its interactions.
@@ -18,6 +23,8 @@ Formula Features
 The system supports:
 java
 Copy code
+
+
 **// Examples of valid formulas:**
 =1.5             // Direct number  
 =A1              // Reference to another cell  
@@ -30,11 +37,15 @@ ERR_FORM         // Invalid formula format
 ERR_CYCLE        // Circular dependency detected  
 ERR_REF          // Invalid cell reference  
 Testing
+
+
 **To ensure everything works perfectly, I thoroughly tested:**
 1.	Formula Evaluation: Making sure expressions like =1+2 compute correctly.
 2.	Cell References: Verifying that A1 can use values from B2.
 3.	Error Detection: Catching invalid formulas or circular references.
 4.	Data Types: Ensuring numbers and text are identified properly.
+
+
 **What I Learned**
 This project was an exciting opportunity to:
 •	Dive deep into object-oriented programming in Java.
